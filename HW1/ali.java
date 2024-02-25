@@ -34,50 +34,38 @@ public class ali {
     }
 
     private static void removeFirstEven(ArrayList<Integer> array) {
-//        System.out.println("removeFirstEven");
         for (int i = 0; i < array.size(); i++) {
             if (array.get(i) % 2 == 0) {
-//                System.out.println("removing" + array.get(i));
                 array.remove(i);
                 break;
             }
         }
-//        System.out.println(array);
     }
 
     private static void removeFirstOdd(ArrayList<Integer> array) {
-//        System.out.println("removeFirstOdd");
         for (int i = 0; i < array.size(); i++) {
             if (array.get(i) % 2 != 0) {
-//                System.out.println("removing" + array.get(i));
                 array.remove(i);
                 break;
             }
         }
-//        System.out.println(array);
     }
 
     private static void removeLastEven(ArrayList<Integer> array) {
-//        System.out.println("removeLastEven");
         for (int i = array.size() - 1; i >= 0; i--) {
             if (array.get(i) % 2 == 0) {
-//                System.out.println("removing" + array.get(i));
                 array.remove(i);
                 break;
             }
         }
-//        System.out.println(array);
     }
 
     private static void removeLastOdd(ArrayList<Integer> array) {
-//        System.out.println("removeLastOdd");
         for (int i = array.size() - 1; i >= 0; i--) {
             if (array.get(i) % 2 != 0) {
-//                System.out.println("removing" + array.get(i));
                 array.remove(i);
                 break;
             }
         }
-//        System.out.println(array);
     }
 }
