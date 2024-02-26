@@ -35,7 +35,7 @@ public class sit {
             for (int j = 0; j < seats[i].length; j++) {
                 if (seats[i][j] == '.') {
                     int distance = getDistanceToNearestPerson(seats, i, j);
-//                    System.out.println("distance for row " + (i+1) + " col " + (j+1) + " : " + distance);
+                    System.out.println("distance for row " + (i+1) + " col " + (j+1) + " : " + distance);
                     if (distance > maxDistance || (distance == maxDistance && (i < bestSeat[0] || (i == bestSeat[0] && j < bestSeat[1])))) {
                         maxDistance = distance;
                         bestSeat[0] = i;
