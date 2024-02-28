@@ -8,96 +8,34 @@ public class SandwichMaker {
     }
 
     public static int longestSubstring(String s) {
-        int maxLength = 0;
-        String curMaxSub = "";
-        String prevMaxSub;
-        boolean flagForDetectingOthers = true;
+        int bCount = 0, mCount = 0, maxLength = 0;
         ArrayList<Integer> maxes = new ArrayList<Integer>();
-        int flag = 0;
         for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == 'b') {
-                int bCount = 1;
-                int mCount = 0;
-                int j = i + 1;
-                while (j < s.length() && bCount != mCount) {
-                    if (s.charAt(j) == 'b') {
+            if (s.charAt(i) == 'b'){
+                bCount = 0;
+                mCount = 0;
+                for (int j = i; j < s.length(); j++) {
+                    if (s.charAt(j) == 'b'){
                         bCount++;
-                    } else if (s.charAt(j) == 'm') {
+//                        System.out.println("b: " + bCount);
+                    }
+                    else if (s.charAt(j) == 'm'){
                         mCount++;
-                    }
-                    j++;
-                }
-                if (bCount == mCount){
-                    prevMaxSub = curMaxSub;
-                    if (i == 0){
-                        curMaxSub = s.substring(i, j);
-                        System.out.println("FUUUCk");
-                        System.out.println("i " + i);
-                        System.out.println("j " + (j-1));
-                        System.out.println("cur: " + curMaxSub);
-                        System.out.println("prev: " + prevMaxSub);
-                        flag = j - 1;
-                        System.out.println("flag: " + flag);
-                        System.out.println("----");
-                        maxLength = curMaxSub.length();
-                    }
-                    else if (flag + 1 == i){
-//                      two valid substrings next to each other
-                        System.out.println("entered else if");
-                        curMaxSub = s.substring(i, j);
-                        curMaxSub = prevMaxSub + curMaxSub;
-                        System.out.println("i " + i);
-                        flag = j - 1;
-                        System.out.println("j " + (j-1));
-                        System.out.println("cur: " + curMaxSub);
-                        System.out.println("prev: " + prevMaxSub);
-                        System.out.println("flag: " + flag);
-                        System.out.println("----");
-                        maxLength = curMaxSub.length();
-                    }else {
-                        System.out.println("entered else");
-                        System.out.println("i " + i);
-                        System.out.println(s.substring(0, i));
-                        if (s.substring(0, i).contains("b")){
-                            System.out.println(s.substring(0, i));
-                            System.out.println("Ssssssss");
-                            for (int k = flag + 1; k < i; k++) {
-                                System.out.println("k " + k);
-                                if (s.charAt(k) == 'm' || s.charAt(k) == 'b'){
-                                    flagForDetectingOthers = false;
-                                    System.out.println("break");
-                                    break;
-                                }
-                            }
-                        }
+//                        System.out.println("m: " + mCount);
 
-//                      bsmppbssm -> to detect the pp
-                        if (s.substring(0, i).contains("b")){
-                            if (flagForDetectingOthers){
-                                curMaxSub = curMaxSub + s.substring(flag + 1, i);
-                                System.out.println("used flagForDetectingOthers");
-                                System.out.println(curMaxSub);
-                            }
-                        }
-
-                        flag = j - 1;
-                        prevMaxSub = curMaxSub;
-                        curMaxSub = prevMaxSub + s.substring(i, j);
-                        System.out.println("i " + i);
-                        System.out.println("j " + (j-1));
-                        System.out.println("cur: " + curMaxSub);
-                        System.out.println("prev: " + prevMaxSub);
-                        System.out.println("flag: " + flag);
-                        System.out.println("----");
-                        maxLength = curMaxSub.length();
                     }
-                    System.out.println("max len: " + maxLength);
-                    maxes.add(maxLength);
+                    if (mCount > bCount){
+                        break;
+                    }
+                    if (mCount == bCount && s.charAt(j) == 'm'){
+//                        System.out.println(s.substring(i, j+1));
+                        maxLength = s.substring(i, j+1).length();
+                        maxes.add(maxLength);
+                    }
                 }
             }
         }
-        System.out.println(maxes);
-        if (!maxes.isEmpty()) {
+        if (!maxes.isEmpty()){
             maxLength = Collections.max(maxes);
         }
         return maxLength;
