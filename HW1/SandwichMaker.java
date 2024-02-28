@@ -17,18 +17,14 @@ public class SandwichMaker {
                 for (int j = i; j < s.length(); j++) {
                     if (s.charAt(j) == 'b'){
                         bCount++;
-//                        System.out.println("b: " + bCount);
                     }
                     else if (s.charAt(j) == 'm'){
                         mCount++;
-//                        System.out.println("m: " + mCount);
-
                     }
                     if (mCount > bCount){
                         break;
                     }
                     if (mCount == bCount && s.charAt(j) == 'm'){
-//                        System.out.println(s.substring(i, j+1));
                         maxLength = s.substring(i, j+1).length();
                         maxes.add(maxLength);
                     }
