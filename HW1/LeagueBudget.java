@@ -6,91 +6,48 @@ public class LeagueBudget {
         int n = scanner.nextInt();
         PriorityQueue<Player> players = new PriorityQueue<>(Comparator.comparingInt(Player::getSalary).reversed());
         ArrayList <Player> playersToRemove = new ArrayList<>();
-        List<Integer> salariesLeft = new ArrayList<>();
+        TreeSet<Object> salariesLeft = new TreeSet<>();
 
-
-        for (int s = 0; s < n; s++) {
+        for (int s = n - 1; s >= 0; s--) {
             int k = scanner.nextInt();
-
-            for (int i = 0; i < k; i++) {
-                int salary = scanner.nextInt();
-                int seasons = scanner.nextInt();
-                Player newPlayer = new Player(salary, seasons);
-                players.add(newPlayer);
-            }
-
-//            System.out.println("New Players to add:");
-//            for (Player newPlayer : newPlayers) {
-//                System.out.println("salary: " + newPlayer.salary + " seasons: " + newPlayer.remainingSeasons);
-//            }
-
-//            System.out.println("adding new players");
-
-//            System.out.println("All players after adding new players: ");
-//            for (Player player : players) {
-//                System.out.println("salary: " + player.salary + " seasons: " + player.remainingSeasons);
-//            }
-//            System.out.println("Fuck you " + players.size());
-
-            salariesLeft.clear();
-//            System.out.println("salariesLeft");
-//            System.out.println(salariesLeft);
-
-//            int maximum = players.get(0).salary;
-            Player leaving = players.poll();
-//            for (Player value : players) {
-//                if (maximum < value.salary) {
-//                    maximum = value.salary;
-//                    leaving = value;
-//                }
-//            }
-            players.remove(leaving);
-//            System.out.println("will leave: ");
-//            System.out.println(leaving.salary);
-            salariesLeft.add(leaving.salary);
-
-//            System.out.println(salariesLeft);
-
-            for (Player player : players) {
-                player.remainingSeasons--;
-            }
-
-//            System.out.println("after decreasing seasons:");
-//            for (Player player : players) {
-////                System.out.println("salary: " + player.salary + " seasons: " + player.remainingSeasons);
-//            }
-
-//            System.out.println("Number of players: " + players.size());
-//            for (int i = 0; i < players.size(); i++) {
-////                System.out.println(i);
-//                if (players.get(i).remainingSeasons == 0){
-////                    System.out.println("removing: " + players.get(i).salary + " index " + i);
-//                    playersToRemove.add(players.get(i));
-//                    salariesLeft.add(players.get(i).salary);
-//                }
-//            }
-
-//            To Do
-            for (Player player : players){
-                if (player.remainingSeasons == 0){
-                    playersToRemove.add(player);
-                    salariesLeft.add(player.salary);
+            if (k != 0) {
+                for (int i = 0; i < k; i++) {
+                    int salary = scanner.nextInt();
+                    int seasons = scanner.nextInt();
+                    Player newPlayer = new Player(salary, seasons);
+                    players.add(newPlayer);
                 }
+
+                salariesLeft.clear();
+                for (Player player : players) {
+//                    System.out.println("player " + player.salary + " seasons left + " player.remainingSeasons);
+//                    System.out.println("s " + s);
+                    if (player.remainingSeasons == 1) {
+                        playersToRemove.add(player);
+                        salariesLeft.add(player.salary);
+                    }
+                    player.remainingSeasons--;
+                }
+                players.remove(playersToRemove);
+
+
+                Player leaving = players.poll();
+                players.remove(leaving);
+//                System.out.println("will leave: ");
+//                System.out.println(leaving.salary);
+                salariesLeft.add(leaving.salary);
+//                System.out.println(salariesLeft);
+
+                String result = salariesLeft.toString();
+                result = result.replace(",", "");
+                result = result.substring(1, result.length()-1);
+                System.out.println(result);
             }
 
-            players.remove(playersToRemove);
-
-//            System.out.println("removing finished contracts at the end of season:");
-//            for (Player player : players) {
-////                System.out.println("salary: " + player.salary + " seasons: " + player.remainingSeasons);
-//            }
-
-            Collections.sort(salariesLeft);
-
-            for (Integer salary : salariesLeft) {
-                System.out.print(salary + " ");
+            if (salariesLeft.isEmpty()){
+                System.out.println();
             }
-            System.out.println();
+
         }
     }
 
