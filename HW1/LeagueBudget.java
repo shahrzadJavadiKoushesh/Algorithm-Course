@@ -2,63 +2,81 @@ import java.util.*;
 
 public class LeagueBudget {
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
-        ArrayList<List> salariesLeft = new ArrayList<>();
-        Map<Integer, List> playersInfo = new HashMap<>();
+        PriorityQueue<Player> players = new PriorityQueue<>(Comparator.comparingInt(Player::getSalary).reversed());
+        TreeSet<Object> salariesLeft = new TreeSet<>();
 
-        if (n == 0) {
-            System.out.println();
-        }
-        for (int s = 1; s <= n; s++) {
-            salariesLeft.clear();
+        for (int s = 0; s < n; s++) {
             int k = scanner.nextInt();
-
-            while (k > 0){
-                long salary = scanner.nextLong();
+            for (int i = 0; i < k; i++) {
+                int salary = scanner.nextInt();
                 int seasons = scanner.nextInt();
-                if (playersInfo.containsKey(seasons + s)) {
-                    List salaries = playersInfo.get(seasons + s);
-                    salaries.add(salary);
-                } else {
-                    List<Long> salaries = new ArrayList<>();
-                    salaries.add(salary);
-                    playersInfo.put(seasons + s, salaries);
+                players.add(new Player(salary, seasons));
+            }
+
+//                System.out.println("all players:");
+//                for (Player player : players){
+//                    System.out.println(player.salary);
+//                }
+
+//                System.out.println();
+
+            salariesLeft.clear();
+
+            Iterator<Player> iterator = players.iterator();
+            while (iterator.hasNext()) {
+                Player player = iterator.next();
+//                    System.out.println("player " + player.salary + " seasons left " + player.remainingSeasons);
+                player.remainingSeasons--;
+                if (player.remainingSeasons == 0) {
+                    salariesLeft.add(player.salary);
+//                        System.out.println("player " + player.salary + " removed");
+                    iterator.remove();
                 }
-
-                k--;
-            }
-            playersInfo.get(s + 1);
-            if (playersInfo.get(s + 1) != null && !playersInfo.get(s + 1).isEmpty()) {
-                salariesLeft.add(playersInfo.get(s + 1));
-            }
-            playersInfo.remove(s + 1);
-
-//                                removing the highest salary
-            ArrayList<Long> allIntegers = new ArrayList<>();
-            for (List sublist : playersInfo.values()) {
-                allIntegers.addAll(sublist);
             }
 
-            if (!allIntegers.isEmpty()) {
-                long max = Collections.max(allIntegers);
-                playersInfo.forEach((key, v) -> v.removeIf(i -> i.equals(max)));
-                Long[] temp = new Long[1];
-                temp[0] = (max);
-                salariesLeft.add(List.of(temp));
-            }
+//                System.out.println("after contract is finished");
+//                for (Player player : players){
+//                    System.out.println(player.salary + " " + player.remainingSeasons);
+//                }
 
-            ArrayList<Integer> allSalaries = new ArrayList<>();
-            for (List sublist : salariesLeft) {
-                allSalaries.addAll(sublist);
+            Player leaving = players.poll();
+//                players.remove(leaving);
+            if (leaving != null){
+                salariesLeft.add(leaving.salary);
             }
+//                System.out.println(salariesLeft);
 
-            Collections.sort(allSalaries);
-            String result = allSalaries.toString().substring(1, allSalaries.toString().length() - 1);
-            result = result.replaceAll(",", "");
+//                System.out.println("after leaving player left");
+//                for (Player player : players){
+//                    System.out.println(player.salary + " " + player.remainingSeasons);
+//                }
+
+            String result = salariesLeft.toString();
+            result = result.replace(",", "");
+            result = result.substring(1, result.length() - 1);
             System.out.println(result);
+
+
+//            if (salariesLeft.isEmpty()) {
+//                System.out.println();
+//            }
+
+        }
+    }
+
+    static class Player {
+        int salary;
+        int remainingSeasons;
+
+        public Player(int salary, int seasons) {
+            this.salary = salary;
+            this.remainingSeasons = seasons;
+        }
+
+        public int getSalary() {
+            return salary;
         }
     }
 }
-
