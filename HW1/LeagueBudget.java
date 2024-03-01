@@ -2,66 +2,63 @@ import java.util.*;
 
 public class LeagueBudget {
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
-        PriorityQueue<Player> players = new PriorityQueue<>(Comparator.comparingInt(Player::getSalary).reversed());
-        ArrayList <Player> playersToRemove = new ArrayList<>();
-        TreeSet<Object> salariesLeft = new TreeSet<>();
+        ArrayList<List> salariesLeft = new ArrayList<>();
+        Map<Integer, List> playersInfo = new HashMap<>();
 
-        for (int s = n - 1; s >= 0; s--) {
+        if (n == 0) {
+            System.out.println();
+        }
+        for (int s = 1; s <= n; s++) {
+            salariesLeft.clear();
             int k = scanner.nextInt();
-            if (k != 0) {
-                for (int i = 0; i < k; i++) {
-                    int salary = scanner.nextInt();
-                    int seasons = scanner.nextInt();
-                    Player newPlayer = new Player(salary, seasons);
-                    players.add(newPlayer);
+
+            while (k > 0){
+                long salary = scanner.nextLong();
+                int seasons = scanner.nextInt();
+                if (playersInfo.containsKey(seasons + s)) {
+                    List salaries = playersInfo.get(seasons + s);
+                    salaries.add(salary);
+                } else {
+                    List<Long> salaries = new ArrayList<>();
+                    salaries.add(salary);
+                    playersInfo.put(seasons + s, salaries);
                 }
 
-                salariesLeft.clear();
-                for (Player player : players) {
-//                    System.out.println("player " + player.salary + " seasons left + " player.remainingSeasons);
-//                    System.out.println("s " + s);
-                    if (player.remainingSeasons == 1) {
-                        playersToRemove.add(player);
-                        salariesLeft.add(player.salary);
-                    }
-                    player.remainingSeasons--;
-                }
-                players.remove(playersToRemove);
+                k--;
+            }
+            playersInfo.get(s + 1);
+            if (playersInfo.get(s + 1) != null && !playersInfo.get(s + 1).isEmpty()) {
+                salariesLeft.add(playersInfo.get(s + 1));
+            }
+            playersInfo.remove(s + 1);
 
-
-                Player leaving = players.poll();
-                players.remove(leaving);
-//                System.out.println("will leave: ");
-//                System.out.println(leaving.salary);
-                salariesLeft.add(leaving.salary);
-//                System.out.println(salariesLeft);
-
-                String result = salariesLeft.toString();
-                result = result.replace(",", "");
-                result = result.substring(1, result.length()-1);
-                System.out.println(result);
+//                                removing the highest salary
+            ArrayList<Long> allIntegers = new ArrayList<>();
+            for (List sublist : playersInfo.values()) {
+                allIntegers.addAll(sublist);
             }
 
-            if (salariesLeft.isEmpty()){
-                System.out.println();
+            if (!allIntegers.isEmpty()) {
+                long max = Collections.max(allIntegers);
+                playersInfo.forEach((key, v) -> v.removeIf(i -> i.equals(max)));
+                Long[] temp = new Long[1];
+                temp[0] = (max);
+                salariesLeft.add(List.of(temp));
             }
 
-        }
-    }
+            ArrayList<Integer> allSalaries = new ArrayList<>();
+            for (List sublist : salariesLeft) {
+                allSalaries.addAll(sublist);
+            }
 
-    static class Player {
-        int salary;
-        int remainingSeasons;
-
-        public Player(int salary, int seasons) {
-            this.salary = salary;
-            this.remainingSeasons = seasons;
-        }
-
-        public int getSalary() {
-            return salary;
+            Collections.sort(allSalaries);
+            String result = allSalaries.toString().substring(1, allSalaries.toString().length() - 1);
+            result = result.replaceAll(",", "");
+            System.out.println(result);
         }
     }
 }
+
