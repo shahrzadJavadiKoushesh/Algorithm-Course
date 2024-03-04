@@ -15,53 +15,27 @@ public class LeagueBudget {
                 players.add(new Player(salary, seasons));
             }
 
-//                System.out.println("all players:");
-//                for (Player player : players){
-//                    System.out.println(player.salary);
-//                }
-
-//                System.out.println();
-
             salariesLeft.clear();
 
             Iterator<Player> iterator = players.iterator();
             while (iterator.hasNext()) {
                 Player player = iterator.next();
-//                    System.out.println("player " + player.salary + " seasons left " + player.remainingSeasons);
                 player.remainingSeasons--;
                 if (player.remainingSeasons == 0) {
                     salariesLeft.add(player.salary);
-//                        System.out.println("player " + player.salary + " removed");
                     iterator.remove();
                 }
             }
 
-//                System.out.println("after contract is finished");
-//                for (Player player : players){
-//                    System.out.println(player.salary + " " + player.remainingSeasons);
-//                }
-
             Player leaving = players.poll();
-//                players.remove(leaving);
             if (leaving != null){
                 salariesLeft.add(leaving.salary);
             }
-//                System.out.println(salariesLeft);
-
-//                System.out.println("after leaving player left");
-//                for (Player player : players){
-//                    System.out.println(player.salary + " " + player.remainingSeasons);
-//                }
 
             String result = salariesLeft.toString();
             result = result.replace(",", "");
             result = result.substring(1, result.length() - 1);
             System.out.println(result);
-
-
-//            if (salariesLeft.isEmpty()) {
-//                System.out.println();
-//            }
 
         }
     }
