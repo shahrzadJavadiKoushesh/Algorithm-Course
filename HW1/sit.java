@@ -3,74 +3,77 @@ import java.util.*;
 public class sit {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        int m = scanner.nextInt();
+        int n = scanner.nextInt();  // row
+        int m = scanner.nextInt();  // column
         int k = scanner.nextInt();
 
-        char[][] seats = new char[n][m];
+        String[] seats = new String[n];
         for (int i = 0; i < n; i++) {
-            String row = scanner.next();
-            for (int j = 0; j < m; j++) {
-                seats[i][j] = row.charAt(j);
-            }
+            seats[i] = scanner.next();
         }
 
         for (int s = 0; s < k; s++) {
             PriorityQueue<SalonSeat> pq = new PriorityQueue<>(new SeatComparator());
             for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (seats[i][j] == '.') {
-                        int distance = calculateDistance(seats, i, j);
-//                        System.out.println("distance for seat " + (i+1) + " " + (j+1) + " is " + distance);
-                        pq.add(new SalonSeat(i + 1, j + 1, distance));
-                    }
-                }
+                int distance = calculateDistance(seats[i], m);
+                System.out.println(distance);
+//                pq.add(new SalonSeat(i + 1, j + 1, distance));
+//
             }
-//            System.out.println("queue at iteration " + (s+1));
-//            for (SalonSeat seat : pq){
-//                System.out.println(seat.row + " " + seat.col + " " + seat.distance);
-//            }
+            System.out.println("queue at iteration " + (s + 1));
+            for (SalonSeat seat : pq) {
+                System.out.println(seat.row + " " + seat.col + " " + seat.distance);
+            }
             SalonSeat seat = pq.poll();
             System.out.println(seat.row + " " + seat.col);
-            seats[seat.row - 1][seat.col - 1] = '#';
-//            for (int i = 0; i < n; i++) {
-//                for (int j = 0; j < m; j++) {
-//                    System.out.print(seats[i][j]);
-//                }
-//                System.out.println();
-//            }
+//            seats[seat.row - 1].charAt(seat.col - 1) = '#';
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    System.out.print(seats[i].charAt(j));
+                }
+                System.out.println();
+            }
         }
     }
 
-    public static int calculateDistance(char[][] seats, int row, int col) {
-        if (seats[row][col] == '#'){
-            return 0;
-        }
-
+    public static int calculateDistance(String seats, int m) {
         int leftDistance = Integer.MAX_VALUE;
         int rightDistance = Integer.MAX_VALUE;
         int finalDistance = 0;
 
-        // left
-        for (int i = col - 1; i >= 0; i--) {
-            if (seats[row][i] == '#') {
-                leftDistance = col;
-                break;
+        char [] seatsArr = seats.toCharArray();
+        System.out.println(seatsArr);
+
+        if (seats.contains("#")){
+            for (int i = 0; i < seatsArr.length; i++) {
+                System.out.println("i: " + i);
+                // right
+                if (seatsArr[i] == '.' && i < m - 1){
+                    String fromHere = seats.substring(i);
+                    System.out.println(fromHere);
+                    rightDistance = (fromHere.substring(0, fromHere.indexOf('#'))).length();
+                    System.out.println("right distance "  + " : " + rightDistance);
+                }
+                // left
+                if (seatsArr[i] == '.' && i > 0){
+                    String fromHere = seats.substring(0, i+1);
+                    System.out.println(fromHere);
+                    if (fromHere.contains("#")){
+                        leftDistance = fromHere.substring(fromHere.lastIndexOf('#'), i).length();
+                        System.out.println("left distance "  + " : " + leftDistance);
+                    }
+                }
+                finalDistance = Math.min(leftDistance, rightDistance);
+                System.out.println("Final: ");
+                System.out.println(finalDistance);
             }
         }
+        else{
 
-        // right
-        for (int i = col + 1; i < seats[row].length; i++) {
-            if (seats[row][i] == '#') {
-                rightDistance = i - col;
-                break;
-            }
+            finalDistance = Integer.MAX_VALUE;
         }
 
-//        System.out.println("right distance for row " + row + " col " + col + " : " + rightDistance);
-//        System.out.println("left distance for row " + row + " col " + col + " : " + leftDistance);
-        finalDistance = Math.min(leftDistance, rightDistance);
-//        System.out.println(finalDistance);
+       
         return finalDistance;
     }
 
@@ -94,6 +97,16 @@ public class sit {
                 return Integer.compare(s1.row, s2.row);
             }
             return Integer.compare(s2.distance, s1.distance);
+        }
+    }
+
+    static class Position {
+        int x;
+        int y;
+
+        public Position(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 }
