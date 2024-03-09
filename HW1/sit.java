@@ -35,7 +35,6 @@ public class sit {
             modifiedIndice = seat.row - 1;
             int finalModifiedIndice = modifiedIndice;
             pq.removeIf(obj -> obj.row == finalModifiedIndice + 1);
-//            System.out.println("changed: " + modifiedIndice);
         }
     }
 
@@ -46,39 +45,40 @@ public class sit {
 
         char[] seatsArr = seats.toCharArray();
         PriorityQueue<SalonSeat> salonSeats = new PriorityQueue<>(new SeatComparator());
+        PriorityQueue<SalonSeat> curRow = new PriorityQueue<>(new SeatComparator());
+        SalonSeat bestSeatOfRow;
 
         for (int i = 0; i < seatsArr.length; i++) {
             if (seatsArr[i] != '#') {
                 leftDistance = Integer.MAX_VALUE;
                 rightDistance = Integer.MAX_VALUE;
-//                System.out.println("i: " + i);
                 // right
                 if (seatsArr[i] == '.' && i < seatsArr.length - 1) {
                     String fromHere = seats.substring(i);
                     if (fromHere.indexOf('#') != -1) {
-//                        System.out.println(seats);
-//                        System.out.println();
-//                        System.out.println(fromHere);
                         rightDistance = (fromHere.substring(0, fromHere.indexOf('#'))).length();
                     }
-//                    System.out.println("right distance " + " : " + rightDistance);
                 }
                 // left
                 if (seatsArr[i] == '.' && i > 0) {
                     String fromHere = seats.substring(0, i + 1);
-//                    System.out.println("from here " + fromHere);
                     if (fromHere.contains("#")) {
                         leftDistance = fromHere.substring(fromHere.lastIndexOf('#'), i).length();
-//                        System.out.println("left distance " + " : " + leftDistance);
                     }
                 }
                 finalDistance = Math.min(leftDistance, rightDistance);
             } else {
                 finalDistance = 0;
             }
-            salonSeats.add(new SalonSeat(row + 1, i + 1, finalDistance));
+            curRow.add(new SalonSeat(row + 1, i + 1, finalDistance));
         }
-//        System.out.println("array salon seats:");
+//        System.out.println("array curRow:");
+//        for (SalonSeat salonSeat : curRow) {
+//            System.out.println(salonSeat.row + " " + salonSeat.col + " " + salonSeat.distance);
+//        }
+        bestSeatOfRow = curRow.poll();
+        salonSeats.add(bestSeatOfRow);
+//        System.out.println("salonSeats:");
 //        for (SalonSeat salonSeat : salonSeats) {
 //            System.out.println(salonSeat.row + " " + salonSeat.col + " " + salonSeat.distance);
 //        }
