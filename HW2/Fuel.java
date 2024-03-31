@@ -21,20 +21,28 @@ public class Fuel {
         boolean[] visited = new boolean[n + 1];
         dfs(1, graph, minCosts, visited, 0);
 
+        System.out.println("Min Costs:");
+        for (int i = 1; i <= n; i++) {
+            System.out.println("Node " + i + ": " + minCosts[i]);
+        }
+
         int minCost = Integer.MAX_VALUE;
         for (int i = 0; i < q; i++) {
             int targetNode = scanner.nextInt();
             minCost = Math.min(minCost, minCosts[targetNode]);
         }
 
-        System.out.println(minCost);
+        System.out.println("Minimum Cost to Visit Targets: " + minCost);
     }
 
     static void dfs(int node, Map<Integer, List<Edge>> graph, int[] minCosts, boolean[] visited, int cost) {
+        System.out.println("Visiting Node " + node + " with cost " + cost);
         visited[node] = true;
         minCosts[node] = cost;
 
         for (Edge child : graph.getOrDefault(node, new ArrayList<>())) {
+            System.out.println(child.node);
+            System.out.println("cost: " + cost);
             if (!visited[child.node]) {
                 dfs(child.node, graph, minCosts, visited, cost + child.cost);
             }
