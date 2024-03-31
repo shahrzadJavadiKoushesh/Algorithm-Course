@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Fuel {
     public static void main(String[] args) {
@@ -19,32 +20,50 @@ public class Fuel {
 
         int[] minCosts = new int[n + 1];
         boolean[] visited = new boolean[n + 1];
-        dfs(1, graph, minCosts, visited, 0);
+        dfs(graph, minCosts, visited);
 
         System.out.println("Min Costs:");
         for (int i = 1; i <= n; i++) {
             System.out.println("Node " + i + ": " + minCosts[i]);
         }
 
-        int minCost = Integer.MAX_VALUE;
+        TreeSet<Integer> answers = new TreeSet<>();
+        int minCost = 0;
         for (int i = 0; i < q; i++) {
             int targetNode = scanner.nextInt();
-            minCost = Math.min(minCost, minCosts[targetNode]);
+            answers.add(minCosts[targetNode]);
         }
 
-        System.out.println("Minimum Cost to Visit Targets: " + minCost);
+//        System.out.println("answers:");
+//        for (Integer item : answers) {
+//            System.out.println(item);
+//        }
+
+        if (q > 1){
+            answers.pollLast();
+            for (Integer item : answers) {
+                minCost += item;
+            }
+        }
+
+        System.out.println(minCost);
     }
 
-    static void dfs(int node, Map<Integer, List<Edge>> graph, int[] minCosts, boolean[] visited, int cost) {
-        System.out.println("Visiting Node " + node + " with cost " + cost);
-        visited[node] = true;
-        minCosts[node] = cost;
+    static void dfs(Map<Integer, List<Edge>> graph, int[] minCosts, boolean[] visited) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(1);
+        visited[1] = true;
 
-        for (Edge child : graph.getOrDefault(node, new ArrayList<>())) {
-            System.out.println(child.node);
-            System.out.println("cost: " + cost);
-            if (!visited[child.node]) {
-                dfs(child.node, graph, minCosts, visited, cost + child.cost);
+        while (!queue.isEmpty()) {
+            int currentNode = queue.poll();
+            System.out.println("current node: " + currentNode);
+            for (Edge child : graph.getOrDefault(currentNode, new ArrayList<>())) {
+                if (!visited[child.node]) {
+                    minCosts[child.node] = minCosts[currentNode] + child.cost;
+                    visited[child.node] = true;
+                    queue.offer(child.node);
+                }
+                System.out.println(Arrays.toString(queue.toArray()));
             }
         }
     }
