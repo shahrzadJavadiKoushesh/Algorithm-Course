@@ -32,14 +32,6 @@ public class fromRoot {
             this.vd = vd;
         }
 
-        public int getHd() {
-            return hd;
-        }
-
-        public int getVd() {
-            return vd;
-        }
-
         @Override
         public int compareTo(Value other) {
             return Integer.compare(this.hd, other.hd);
@@ -54,7 +46,8 @@ public class fromRoot {
         }
         Queue<Pair> queue = new LinkedList<>();
         queue.offer(new Pair(root, 0, 0));
-
+        int maxHd = 0, minHd = 0;
+        Map <Integer, Integer> vds = new HashMap<>();
         while (!queue.isEmpty()) {
 
             Pair current = queue.poll();
@@ -62,15 +55,22 @@ public class fromRoot {
             int hd = current.hd;
             int vd = current.vd;
 
-            boolean foundHd = map.keySet().stream().anyMatch(value -> value.getHd() == hd);
-            boolean foundVdAndHd = map.keySet().stream().anyMatch(value -> value.getVd() == vd && value.getHd() == hd);
-            if (!foundHd){
+            if (hd > maxHd){
                 map.put(new Value(hd, vd), node.val);
-            } else {
-                if (hd > 0 && foundVdAndHd){
-                    Value toRemove = new Value(hd, vd);
+                vds.put(hd, vd);
+                maxHd = hd;
+            } else if (hd == maxHd && vds.isEmpty()){
+//              Just for root
+                map.put(new Value(hd, vd), node.val);
+                vds.put(0, 0);
+            } else if(hd == maxHd){
+                if (vd <= vds.get(hd)){
                     map.put(new Value(hd, vd), node.val);
+                    vds.put(hd, vd);
                 }
+            } else if (hd < minHd){
+                map.put(new Value(hd, vd), node.val);
+                minHd = hd;
             }
 
             if (node.left != null) {
@@ -105,8 +105,9 @@ public class fromRoot {
         }
 
         Map<Value, Integer> result = topView(nodes[1]);
-        String ans = result.values().toString();
+        for (Integer anss : result.values()){
+            System.out.print(anss + " ");
+        }
 
-        System.out.println(ans.substring(1, ans.length() - 1).replaceAll(",", ""));
     }
 }
