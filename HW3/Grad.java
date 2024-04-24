@@ -26,7 +26,9 @@ public class Grad {
             lcsResults.append(result[1]).append(" ");
         }
 
-        System.out.println(sum + " " + lcsResults);
+        String result = lcsResults.toString().trim();
+
+        System.out.println(sum + " " + result);
     }
 
     public static int getCharWeight(String weight) {
