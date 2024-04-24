@@ -23,7 +23,7 @@ public class Grad {
             int p = s2.length();
             String[] result = lcsAlgorithm(s1, s2, m, p, weights);
             sum += Integer.parseInt(result[0]);
-            lcsResults.append(result[1]);
+            lcsResults.append(result[1]).append(" ");
         }
 
         System.out.println(sum + " " + lcsResults);
@@ -77,10 +77,10 @@ public class Grad {
         int j = minJ;
         String[] lcsAlgo = new String[index + 1];
         Arrays.fill(lcsAlgo, "");
-        lcsAlgo[index] = " ";
+        lcsAlgo[index] = "";
         while (i > 0 && j > 0) {
             if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
-                lcsAlgo[index - 1] = String.valueOf(s1.charAt(i - 1));
+                lcsAlgo[index] = String.valueOf(s1.charAt(i - 1));
                 i--;
                 j--;
                 index--;
