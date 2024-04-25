@@ -1,31 +1,41 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class StoD {
+    static int findLIS(Vector<Integer> nums) {
+        int n = nums.size();
+        List<Integer> ans = new ArrayList<>();
 
-    public static int minimumMovements(int n, int[] boosters) {
-        int maxBoosters = 0;
-        int maxRow = 0;
+        ans.add(nums.get(0));
 
-        for (int i = 0; i < n; i++) {
-            if (boosters[i] >= maxRow) {
-                maxBoosters++;
-                maxRow = boosters[i];
+        for (int i = 1; i < n; i++) {
+            if (nums.get(i) > ans.get(ans.size() - 1)) {
+                ans.add(nums.get(i));
+            } else {
+
+                int low = Collections.binarySearch(ans, nums.get(i));
+
+                if (low < 0) {
+                    low = -(low + 1);
+                }
+                ans.set(low, nums.get(i));
             }
         }
 
-        return 2 * n - 2 - maxBoosters;
+        return ans.size() + 2;
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
-        int[] boosters = new int[n];
-
+        int booster;
+        Vector<Integer> maps = new Vector<>();
         for (int i = 0; i < n; i++) {
-            boosters[i] = scanner.nextInt() - 1; // Adjust for 0-based indexing
+            booster = scanner.nextInt();
+            if (i != 0 && booster != 1){
+                maps.add(booster);
+            }
         }
 
-        int result = minimumMovements(n, boosters);
-        System.out.println(result);
+        System.out.println(2 * n - findLIS(maps));
     }
 }
