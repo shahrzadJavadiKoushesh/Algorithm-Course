@@ -1,80 +1,38 @@
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+public class TreeTraversal {
+    static List<List<Integer>> adjList = new ArrayList<>();
+    static int[][] dp;
+    static int[] targetNodes;
 
-public class Fuel {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        int q = scanner.nextInt();
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int q = sc.nextInt();
 
-        Map<Integer, List<Edge>> graph = new HashMap<>();
-        for (int i = 0; i < n - 1; i++) {
-            int a = scanner.nextInt();
-            int b = scanner.nextInt();
-            int c = scanner.nextInt();
-            graph.putIfAbsent(a, new ArrayList<>());
-            graph.putIfAbsent(b, new ArrayList<>());
-            graph.get(a).add(new Edge(b, c));
-            graph.get(b).add(new Edge(a, c));
+        dp = new int[n + 1][2];
+        targetNodes = new int[q + 1]; // Increase size by 1
+
+        for (int i = 0; i <= n; i++) {
+            adjList.add(new ArrayList<>());
+            dp[i][0] = dp[i][1] = Integer.MAX_VALUE;
         }
 
-        int[] minCosts = new int[n + 1];
-        boolean[] visited = new boolean[n + 1];
-        dfs(graph, minCosts, visited);
-
-        System.out.println("Min Costs:");
-        for (int i = 1; i <= n; i++) {
-            System.out.println("Node " + i + ": " + minCosts[i]);
+        for (int i = 1; i < n; i++) {
+            int parent = sc.nextInt();
+            int child = sc.nextInt();
+            int cost = sc.nextInt();
+            adjList.get(parent).add(child);
+            adjList.get(child).add(parent);
+            dp[parent][child] = dp[child][parent] = cost;
         }
 
-        TreeSet<Integer> answers = new TreeSet<>();
-        int minCost = 0;
-        for (int i = 0; i < q; i++) {
-            int targetNode = scanner.nextInt();
-            answers.add(minCosts[targetNode]);
+        for (int i = 1; i <= q; i++) { // Start from index 1
+            targetNodes[i] = sc.nextInt();
         }
 
-//        System.out.println("answers:");
-//        for (Integer item : answers) {
-//            System.out.println(item);
-//        }
+        dfs(1, -1);
 
-        if (q > 1){
-            answers.pollLast();
-            for (Integer item : answers) {
-                minCost += item;
-            }
-        }
-
-        System.out.println(minCost);
+        System.out.println(Math.min(dp[1][0], dp[1][1]));
     }
 
-    static void dfs(Map<Integer, List<Edge>> graph, int[] minCosts, boolean[] visited) {
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(1);
-        visited[1] = true;
-
-        while (!queue.isEmpty()) {
-            int currentNode = queue.poll();
-            System.out.println("current node: " + currentNode);
-            for (Edge child : graph.getOrDefault(currentNode, new ArrayList<>())) {
-                if (!visited[child.node]) {
-                    minCosts[child.node] = minCosts[currentNode] + child.cost;
-                    visited[child.node] = true;
-                    queue.offer(child.node);
-                }
-                System.out.println(Arrays.toString(queue.toArray()));
-            }
-        }
-    }
-
-    static class Edge {
-        int node;
-        int cost;
-
-        public Edge(int node, int cost) {
-            this.node = node;
-            this.cost = cost;
-        }
-    }
+    // Remaining code remains the same
 }

@@ -1,69 +1,77 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class MineGame {
-
-    public static int minCriticalPoints(int n, int m, int k, char[][] board) {
-        // dp[i][j] represents minimum critical points starting from (i, j)
-        int[][] dp = new int[n][m];
-
-        // Initialize dp for the last row (cannot exit from here)
-        for (int j = 0; j < m; j++) {
-            dp[n - 1][j] = (board[n - 1][j] == '#') ? 0 : Integer.MAX_VALUE;
-        }
-
-        // Fill dp bottom-up
-        for (int i = n - 2; i >= 0; i--) {
-            for (int j = 0; j < m; j++) {
-                if (board[i][j] == '#') {
-                    dp[i][j] = 0; // Cannot start from a mine
-                } else {
-                    int minCritical = Integer.MAX_VALUE;
-                    // Check both left and right neighbors (if valid)
-                    if (j > 0) {
-                        minCritical = Math.min(minCritical, dp[i][j - 1]);
-                    }
-                    if (j < m - 1) {
-                        minCritical = Math.min(minCritical, dp[i][j + 1]);
-                    }
-                    // Add 1 since current cell might be critical
-                    dp[i][j] = minCritical + 1;
-
-                    // Can we deactivate a mine to create an escape route?
-                    if (k > 0) {
-                        // Deactivate a mine (including all rows)
-                        if (i > 0 || j > 0 || j < m - 1) {
-                            dp[i][j] = Math.min(dp[i][j], minCritical);
-                        } else if (k >= 2) { // Special case: single cell on first row
-                            dp[i][j] = Math.min(dp[i][j], 1);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Count critical points (all points where dp is MAX_VALUE)
-        int criticalPoints = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (dp[i][j] == Integer.MAX_VALUE) {
-                    criticalPoints++;
-                }
-            }
-        }
-
-        return criticalPoints;
-    }
-
     public static void main(String[] args) {
-//        Scanner scanner = new Scanner(System.in);
-        int n = 3;
-        int m = 3;
-        int k = 2;
-        char[][] board = {{'#', '.', '#' }, {'#', '.', '#'}, {'#', '.', '#'}};
+        Scanner scanner = new Scanner(System.in);
+        String[] playgroundSizes = scanner.nextLine().split(" ");
+        int numberOfChances = scanner.nextInt();
+        scanner.nextLine();
+        String[][] board = new String[3][];
+        for (int row = 0; row < 3; row++) {
+            board[row] = scanner.nextLine().split("");
+        }
+        List<List<Integer>> rowsMinesInfo = new ArrayList<>();
 
-//        for (int i = 0; i < n; i++) {
-//            board[i] = scanner.nextLine().toCharArray();
-//        }
-        System.out.println(minCriticalPoints(n, m, k, board)); // Output: 2
+        for (String[] row : board) {
+            List<Integer> rowInfo = new ArrayList<>();
+            for (int i = 0; i < row.length; i++) {
+                if (row[i].equals("#")) {
+                    rowInfo.add(i);
+                }
+            }
+            if (!rowInfo.isEmpty()) {
+                rowsMinesInfo.add(rowInfo);
+            }
+        }
+
+        int bestMax = 0;
+        int bestRow = 0;
+        for (int i = 0; i < numberOfChances; i++) {
+            int bestRowIndex = 0;
+            for (int j = 0; j < rowsMinesInfo.size(); j++) {
+                List<Integer> row = rowsMinesInfo.get(j);
+                int bestRowResult;
+                if (row.size() == 1) {
+                    bestRowResult = 1;
+                    bestRowIndex = 0;
+                } else if (row.size() == 2) {
+                    bestRowResult = row.get(1) - row.get(0);
+                    bestRowIndex = 0;
+                } else {
+                    if (row.get(1) - row.get(0) >= row.get(row.size() - 1) - row.get(row.size() - 2)) {
+                        bestRowResult = row.get(1) - row.get(0);
+                        bestRowIndex = 0;
+                    } else {
+                        bestRowResult = row.get(row.size() - 1) - row.get(row.size() - 2);
+                        bestRowIndex = -1;
+                    }
+                }
+                if (bestRowResult > bestMax) {
+                    bestMax = bestRowResult;
+                    bestRow = j;
+                }
+            }
+            rowsMinesInfo.get(bestRow).remove(bestRowIndex);
+            if (rowsMinesInfo.get(bestRow).isEmpty()) {
+                rowsMinesInfo.remove(bestRow);
+            }
+            bestMax = 0;
+            bestRow = 0;
+        }
+        System.out.println(criticalCell(rowsMinesInfo));
     }
+
+    private static int criticalCell(List<List<Integer>> rowsMinesInfo) {
+        int sum = 0;
+        for (List<Integer> row : rowsMinesInfo) {
+            if (row.size() == 1) {
+                sum += 1;
+            } else {
+                sum += row.get(row.size() - 1) - row.get(0) - 1 + 2;
+            }
+        }
+        return sum;
+    }
+
+
 }
