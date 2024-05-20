@@ -18,12 +18,14 @@ public class War {
             }
         }
 
-        quickSort(tupleList, 0, n - 1);
-        for (int[] x : tupleList) {
-            if (x[0] > k) {
+        int s = tupleList.length;
+
+        quickSort(tupleList, 0, s - 1);
+        for (int[] tuple : tupleList) {
+            if (tuple[0] > k) {
                 break;
             }
-            k += x[1] - x[0];
+            k += tuple[1] - tuple[0];
         }
         System.out.println(k);
     }
@@ -47,9 +49,9 @@ public class War {
 
     private static void quickSort(int[][] array, int low, int high) {
         if (low < high) {
-            int pi = partition(array, low, high);
-            quickSort(array, low, pi - 1);
-            quickSort(array, pi + 1, high);
+            int p = partition(array, low, high);
+            quickSort(array, low, p - 1);
+            quickSort(array, p + 1, high);
         }
     }
 }
