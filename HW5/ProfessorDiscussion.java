@@ -8,12 +8,15 @@ public class ProfessorDiscussion {
         int q = scanner.nextInt();
 
         int[] units = new int[n + 1];
-        Map<Integer, Set<Integer>> agreeMap = new HashMap<>(); // agreeing professors
-        Map<Integer, Set<Integer>> opposeMap = new HashMap<>(); // opposing professors
+        Map<Integer, Set<Integer>> agreeMap = new HashMap<>();
+        Map<Integer, Set<Integer>> opposeMap = new HashMap<>();
+        Map<Integer, Set<Integer>> historyMap = new HashMap<>(); // To keep track of all subtopics a professor was ever responsible for
 
         for (int i = 1; i <= n; i++) {
-            agreeMap.put(i, new HashSet<>(Collections.singletonList(i)));
-            opposeMap.put(i, new HashSet<>(Collections.singletonList(i)));
+            Set<Integer> initialSet = new HashSet<>(List.of(i));
+            agreeMap.put(i, initialSet);
+            opposeMap.put(i, initialSet);
+            historyMap.put(i, new HashSet<>(initialSet)); // Initialize history map with the same initial set
         }
 
         for (int i = 0; i < q; i++) {
@@ -23,36 +26,47 @@ public class ProfessorDiscussion {
                 case "U":
                     x = scanner.nextInt();
                     y = scanner.nextInt();
-                    // event 1
-                    agreeMap.get(x).addAll(agreeMap.get(y));
-                    agreeMap.remove(y);
+                    if (agreeMap.containsKey(y)) {
+                        agreeMap.get(x).addAll(agreeMap.get(y));
+                        historyMap.get(x).addAll(agreeMap.get(y)); // Update history map
+                        agreeMap.remove(y);
+                    }
                     break;
                 case "M":
                     x = scanner.nextInt();
                     y = scanner.nextInt();
-                    // event 2
-                    opposeMap.get(x).addAll(opposeMap.get(y));
-                    opposeMap.remove(y);
+                    if (opposeMap.containsKey(y)) {
+                        opposeMap.get(x).addAll(opposeMap.get(y));
+                        historyMap.get(x).addAll(opposeMap.get(y)); // Update history map
+                        opposeMap.remove(y);
+                    }
                     break;
                 case "A":
                     x = scanner.nextInt();
-                    // event 3
-                    int increase = agreeMap.get(x).size();
-                    for (int subtopic : agreeMap.get(x)) {
-                        units[subtopic] += increase;
+// Use historyMap to get the total number of subtopics the professor was ever responsible for
+                    if (historyMap.containsKey(x)) {
+                        for (int subtopic : historyMap.get(x)) {
+                            if (subtopic >= 1 && subtopic <= n) {
+                                units[subtopic] += historyMap.get(x).size();
+                            }
+                        }
                     }
                     break;
                 case "Z":
                     x = scanner.nextInt();
-                    // event 4
-                    for (int subtopic : opposeMap.get(x)) {
-                        units[subtopic] = 0;
+                    if (opposeMap.containsKey(x)) {
+                        for (int subtopic : opposeMap.get(x)) {
+                            if (subtopic >= 1 && subtopic <= n) {
+                                units[subtopic] = 0;
+                            }
+                        }
                     }
                     break;
                 case "Q":
                     x = scanner.nextInt();
-                    // event 5
-                    System.out.println(units[x]);
+                    if (x >= 1 && x <= n) {
+                        System.out.println(units[x]);
+                    }
                     break;
             }
         }
