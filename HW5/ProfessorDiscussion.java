@@ -10,13 +10,10 @@ public class ProfessorDiscussion {
         int[] units = new int[n + 1];
         Map<Integer, Set<Integer>> agreeMap = new HashMap<>();
         Map<Integer, Set<Integer>> opposeMap = new HashMap<>();
-        Map<Integer, Set<Integer>> historyMap = new HashMap<>(); // To keep track of all subtopics a professor was ever responsible for
 
         for (int i = 1; i <= n; i++) {
-            Set<Integer> initialSet = new HashSet<>(List.of(i));
-            agreeMap.put(i, initialSet);
-            opposeMap.put(i, initialSet);
-            historyMap.put(i, new HashSet<>(initialSet)); // Initialize history map with the same initial set
+            agreeMap.put(i, new HashSet<>(List.of(i)));
+            opposeMap.put(i, new HashSet<>(List.of(i)));
         }
 
         for (int i = 0; i < q; i++) {
@@ -28,7 +25,6 @@ public class ProfessorDiscussion {
                     y = scanner.nextInt();
                     if (agreeMap.containsKey(y)) {
                         agreeMap.get(x).addAll(agreeMap.get(y));
-                        historyMap.get(x).addAll(agreeMap.get(y)); // Update history map
                         agreeMap.remove(y);
                     }
                     break;
@@ -37,17 +33,15 @@ public class ProfessorDiscussion {
                     y = scanner.nextInt();
                     if (opposeMap.containsKey(y)) {
                         opposeMap.get(x).addAll(opposeMap.get(y));
-                        historyMap.get(x).addAll(opposeMap.get(y)); // Update history map
                         opposeMap.remove(y);
                     }
                     break;
                 case "A":
                     x = scanner.nextInt();
-// Use historyMap to get the total number of subtopics the professor was ever responsible for
-                    if (historyMap.containsKey(x)) {
-                        for (int subtopic : historyMap.get(x)) {
+                    if (agreeMap.containsKey(x)) {
+                        for (int subtopic : agreeMap.get(x)) {
                             if (subtopic >= 1 && subtopic <= n) {
-                                units[subtopic] += historyMap.get(x).size();
+                                units[subtopic] += agreeMap.get(x).size();
                             }
                         }
                     }
