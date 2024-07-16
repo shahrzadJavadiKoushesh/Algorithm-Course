@@ -1,2 +1,2 @@
 # Algotirhm-Course
-This repository contains solutions to most questions of Algorithm Course homework at SBU. 
+This repository contains solutions to most questions of Algorithm Design Course homework at SBU. (spring 2024)
