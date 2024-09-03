@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Gas {
-    static final int MAX = 1000000; // A large number representing infinity
+    static final int MAX = 1000000; 
 
     static class Edge {
         int source;
@@ -48,12 +48,10 @@ public class Gas {
             //distance used to store the distance of vertex from a source
             int [] distance = new int[vertices + 1];
 
-            //Initialize all the distance to infinity
             for (int i = 1; i <= vertices; i++) {
                 distance[i] = MAX;
             }
 
-            //Initialize priority queue
             PriorityQueue<Node> pq = new PriorityQueue<>(vertices, Comparator.comparingInt(node -> node.weight));
             distance[sourceVertex] = 0;
             pq.add(new Node(sourceVertex, 0));
@@ -69,9 +67,6 @@ public class Gas {
                         int destination = edge.destination;
                         //only if edge destination is not present in SPT
                         if (SPT[destination] == false) {
-                            ///check if distance needs an update or not
-                            //means check total weight from source to vertex_V is less than
-                            //the current distance value, if yes then update the distance
                             int newKey = distance[extractedVertex] + edge.weight;
                             int currentKey = distance[destination];
                             if (currentKey > newKey) {
@@ -100,7 +95,7 @@ public class Gas {
             int v = scanner.nextInt();
             int w = scanner.nextInt();
             graph.addEdge(u, v, w);
-            graph.addEdge(v, u, w); // Since the roads are two-way
+            graph.addEdge(v, u, w); 
         }
 
         int[] distances = graph.dijkstra_GetMinDistances(1); // 1 is the capital
@@ -117,6 +112,6 @@ public class Gas {
             }
         }
 
-        System.out.println(count / 2); // Each road is counted twice, once for each direction
+        System.out.println(count / 2); 
     }
 }
